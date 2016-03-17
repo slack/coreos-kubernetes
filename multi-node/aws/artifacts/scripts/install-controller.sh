@@ -160,6 +160,16 @@ Requires=flanneld.service
 After=flanneld.service
 EOF
 	}
+	local TEMPLATE=/etc/systemd/system/docker.service.d/50-insecure-registry.conf
+	[ -f $TEMPLATE ] || {
+		echo "TEMPLATE: $TEMPLATE"
+		mkdir -p $(dirname $TEMPLATE)
+		cat << EOF > $TEMPLATE
+[Service]
+Environment=DOCKER_OPTS='--insecure-registry=\"10.0.0.0/8\"'
+EOF
+	}
+
 }
 
 function start_addons {
