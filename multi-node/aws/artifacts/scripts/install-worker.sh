@@ -73,6 +73,15 @@ EOF
 Environment=DOCKER_OPTS='--insecure-registry=\"10.0.0.0/8\"'
 EOF
 	}
+	local TEMPLATE=/etc/systemd/system/docker.service.d/50-disable-selinux.conf
+	[ -f $TEMPLATE ] || {
+		echo "TEMPLATE: $TEMPLATE"
+		mkdir -p $(dirname $TEMPLATE)
+		cat << EOF > $TEMPLATE
+[Service]
+Environment=DOCKER_OPTS='--selinux-enabled=false'
+EOF
+	}
 
 	# reload now before docker commands are run in later
 	# init steps or dockerd will start before flanneld
